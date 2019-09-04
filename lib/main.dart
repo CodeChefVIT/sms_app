@@ -1,19 +1,29 @@
 import "package:flutter/material.dart";
 import "package:sms/sms.dart";
+
+import './recipients.dart';
 // import 'package:sms/contact.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final number = TextEditingController();
+
   final messageEntered = TextEditingController();
+
+  List<String> recipients = [];
 
   void sendSMS() {
     // ContactQuery contacts = ContactQuery();
     // var contact = new Contact(number.text);
     print(number.text);
     print(messageEntered.text);
-    
+
     SmsSender sender = new SmsSender();
     String address = number.text;
 
@@ -38,16 +48,45 @@ class MyApp extends StatelessWidget {
           title: Text("SMS App"),
         ),
         body: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(20),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Contact Number",
+              padding: EdgeInsets.only(top: 20, bottom: 10),
+              child: Text(
+                "Recipients",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
                 ),
-                controller: number,
-                keyboardType: TextInputType.number,
               ),
+            ),
+            RecipientsList(recipients),
+            Row(
+              children: <Widget>[
+                Container(
+                  width: 330,
+                  padding: EdgeInsets.all(20),
+                  child: TextField(
+                    // onSubmitted: (_) {
+                    //   recipients.add(number.text);
+                    //   print(recipients);
+                    // },
+                    decoration: InputDecoration(
+                      labelText: "Contact Number",
+                    ),
+                    controller: number,
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    setState(() {
+                      recipients.add(number.text);
+                    });
+                  },
+                )
+              ],
             ),
             Container(
               padding: EdgeInsets.all(20),
