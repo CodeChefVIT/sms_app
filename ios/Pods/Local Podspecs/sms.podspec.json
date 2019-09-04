@@ -1,0 +1,26 @@
+{
+  "name": "sms",
+  "version": "0.0.1",
+  "summary": "SMS library",
+  "description": "SMS library",
+  "homepage": "http://example.com",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Your Company": "email@example.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": [
+
+    ]
+  },
+  "platforms": {
+    "ios": "8.0"
+  }
+}
