@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:sms/sms.dart";
+// import 'package:flutter_sms/flutter_sms.dart';
 
 import './recipients.dart';
 // import 'package:sms/contact.dart';
@@ -13,7 +14,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final number = TextEditingController();
-
   final messageEntered = TextEditingController();
 
   List<String> recipients = [];
@@ -39,6 +39,15 @@ class _MyAppState extends State<MyApp> {
     });
     sender.sendSms(message);
   }
+
+  // void _sendSMS(String message, List<String> recipents) async {
+  //   String _result =
+  //       await FlutterSms.sendSMS(message: message, recipients: recipents)
+  //           .catchError((onError) {
+  //     print(onError);
+  //   });
+  //   print(_result);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +109,7 @@ class _MyAppState extends State<MyApp> {
             RaisedButton(
               child: Text("Send"),
               onPressed: sendSMS,
+              // onPressed: () => _sendSMS(messageEntered.text, recipients),
             ),
           ],
         ),
