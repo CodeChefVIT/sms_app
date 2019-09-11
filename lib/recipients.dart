@@ -7,8 +7,19 @@ class RecipientsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: recipients.map((number) {
-      return Text("$number");
-    }).toList(),);
+    return Container(
+      height: 50,
+      width: 200,
+      child: Center(
+        child: recipients.length > 0
+            ? ListView.builder(
+                itemBuilder: (ctx, index) {
+                  return Center(child: Text('${recipients[index]}'));
+                },
+                itemCount: recipients.length,
+              )
+            : Text('No Recipients Added Yet'),
+      ),
+    );
   }
 }
