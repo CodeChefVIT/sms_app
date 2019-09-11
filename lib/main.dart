@@ -2,75 +2,113 @@ import "package:flutter/material.dart";
 import "package:sms/sms.dart";
 
 import './recipients.dart';
-// import 'package:sms/contact.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'SMS App',
+      home: MyHomePage(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  final number = TextEditingController();
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
 
-  final messageEntered = TextEditingController();
+class _MyHomePageState extends State<MyHomePage> {
+  TextEditingController number = TextEditingController();
+  TextEditingController messageEntered = TextEditingController();
 
   List<String> recipients = [];
 
-  void sendSMS() {
-    // ContactQuery contacts = ContactQuery();
-    // var contact = new Contact(number.text);
-    print(number.text);
-    print(messageEntered.text);
+  createAlertDialog(BuildContext context,String ttl, String msg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(ttl),
+            content: Text(msg),
+            actions: <Widget>[
+              RaisedButton(
+                child: Text(
+                  'Ok',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        });
+  }
 
-    SmsSender sender = new SmsSender();
-    String address = number.text;
+  void _sendSMS() {
+    if (messageEntered.text.isEmpty || recipients.length == 0) {
+      createAlertDialog(context, 'Error', 'Message or Recipients List can\'t be empty.');
+      return;
+    }
+    for (var i = 0; i < recipients.length; i++) {
+      SmsSender sender = new SmsSender();
+      String address = recipients[i];
 
-    // sender.sendSms(new SmsMessage(address, messageEntered.text));
+      SmsMessage message = new SmsMessage(address, messageEntered.text);
+      sender.sendSms(message);
+      message.onStateChanged.listen((state) {
+        if (state == SmsMessageState.Sent) {
+          print("SMS is sent!");
+        } else if (state == SmsMessageState.Delivered) {
+          print("SMS is delivered!");
+        }
+      });
+    }
 
-    SmsMessage message = new SmsMessage(address, messageEntered.text);
-    message.onStateChanged.listen((state) {
-      if (state == SmsMessageState.Sent) {
-        print("SMS is sent!");
-      } else if (state == SmsMessageState.Delivered) {
-        print("SMS is delivered!");
-      }
+    setState(() {
+      number = TextEditingController();
+      messageEntered = TextEditingController();
+      recipients = [];
     });
-    sender.sendSms(message);
+    createAlertDialog(context, 'Success', 'The messages have been delivered.');
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("SMS App"),
-        ),
-        body: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 20, bottom: 10),
-              child: Text(
-                "Recipients",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text("SMS App"),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 20, bottom: 10),
+            child: Text(
+              "Recipients",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            RecipientsList(recipients),
-            Row(
-              children: <Widget>[
-                Container(
-                  width: 330,
+          ),
+          RecipientsList(recipients),
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 8,
+                child: Container(
                   padding: EdgeInsets.all(20),
                   child: TextField(
-                    // onSubmitted: (_) {
-                    //   recipients.add(number.text);
-                    //   print(recipients);
-                    // },
+                    onSubmitted: (_) {
+                      if (number.text.isNotEmpty) {
+                        setState(() {
+                          recipients.add(number.text);
+                          number = TextEditingController();
+                        });
+                      }
+                    },
                     decoration: InputDecoration(
                       labelText: "Contact Number",
                     ),
@@ -78,31 +116,38 @@ class _MyAppState extends State<MyApp> {
                     keyboardType: TextInputType.number,
                   ),
                 ),
-                IconButton(
+              ),
+              Expanded(
+                flex: 2,
+                child: IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    setState(() {
-                      recipients.add(number.text);
-                    });
+                    if (number.text.isNotEmpty) {
+                      setState(() {
+                        recipients.add(number.text);
+                        number = TextEditingController();
+                      });
+                    }
                   },
-                )
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.all(20),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Message",
                 ),
-                controller: messageEntered,
+              )
+            ],
+          ),
+          Container(
+            padding: EdgeInsets.all(20),
+            child: TextField(
+              onSubmitted: (_) => _sendSMS(),
+              decoration: InputDecoration(
+                labelText: "Message",
               ),
+              controller: messageEntered,
             ),
-            RaisedButton(
-              child: Text("Send"),
-              onPressed: sendSMS,
-            ),
-          ],
-        ),
+          ),
+          RaisedButton(
+            child: Text("Send"),
+            onPressed: _sendSMS,
+          ),
+        ],
       ),
     );
   }
