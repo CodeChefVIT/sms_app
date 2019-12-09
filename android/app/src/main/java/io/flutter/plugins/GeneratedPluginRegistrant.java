@@ -1,6 +1,7 @@
 package io.flutter.plugins;
 
 import io.flutter.plugin.common.PluginRegistry;
+import com.mr.flutter.plugin.filepicker.FilePickerPlugin;
 import com.babariviere.sms.SmsPlugin;
 
 /**
@@ -11,6 +12,7 @@ public final class GeneratedPluginRegistrant {
     if (alreadyRegisteredWith(registry)) {
       return;
     }
+    FilePickerPlugin.registerWith(registry.registrarFor("com.mr.flutter.plugin.filepicker.FilePickerPlugin"));
     SmsPlugin.registerWith(registry.registrarFor("com.babariviere.sms.SmsPlugin"));
   }
 
