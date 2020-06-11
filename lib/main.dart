@@ -162,7 +162,10 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
-          File file = await FilePicker.getFile();
+          File file = await FilePicker.getFile(
+            type: FileType.custom,
+            allowedExtensions: ['csv'],
+          );
           final input = file.openRead();
           final fields = await input
               .transform(utf8.decoder)
