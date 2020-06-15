@@ -18,6 +18,9 @@
   "dependencies": {
     "Flutter": [
 
+    ],
+    "DKImagePickerController/PhotoGallery": [
+
     ]
   },
   "platforms": {
