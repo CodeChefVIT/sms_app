@@ -18,6 +18,12 @@ This app is built on flutter using <strong>sms</strong> package but it can only 
 <img src="./Screenshot_1568227114.png" width="200">
 <img src="./Screenshot_1568227130.png" width="200">
 
+### Features
+
+- Bulk messaging is made easy.
+- Manually type numbers to add to recipients' list.
+- Pick recipients from a CSV from one click.
+
 
 ### Instructions to Run
 
